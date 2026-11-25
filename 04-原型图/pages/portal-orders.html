@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>我的运单 · 货主门户</title><style>:root{
+  --p:#5B2533; --p2:#4A1D2A; --a:#2F6F6A; --bg:#FAF7F5; --ink:#241A1D;
+  --ink2:#6B5E62; --line:#E7DFDC; --acc:#7A3947; --ok:#2D765C; --bad:#A61B29;
+  --warn:#B4761E; --card:#FFFFFF; --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:13px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+a{color:var(--acc);text-decoration:none}
+/* ---- 后台骨架 ---- */
+.shell{display:flex;min-height:100vh}
+.side{width:220px;flex:0 0 220px;background:var(--p);color:#F3E8E6;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{height:56px;display:flex;align-items:center;gap:9px;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.brand b{font-size:14px;letter-spacing:.5px;font-weight:600}
+.brand span{font-size:10px;opacity:.6;letter-spacing:1.5px}
+.nav{padding:10px 0;overflow:auto;flex:1}
+.nav .grp{padding:12px 18px 6px;font-size:11px;opacity:.5;letter-spacing:1px}
+.nav a{display:flex;align-items:center;gap:9px;padding:9px 18px;color:#E7D6D3;font-size:13px;border-left:3px solid transparent}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.on{background:rgba(255,255,255,.12);color:#fff;border-left-color:#E8C9C3;font-weight:600}
+.nav a svg{width:15px;height:15px;opacity:.85;flex:0 0 15px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 24px;position:sticky;top:0;z-index:9}
+.crumb{font-size:12px;color:var(--ink2)}
+.crumb b{color:var(--ink);font-weight:600}
+.top .sp{flex:1}
+.iconbtn{width:32px;height:32px;border-radius:6px;display:grid;place-items:center;color:var(--ink2);position:relative;cursor:pointer}
+.iconbtn:hover{background:#F5EFEC;color:var(--p)}
+.dot{position:absolute;top:5px;right:5px;width:6px;height:6px;background:var(--bad);border-radius:50%}
+.who{display:flex;align-items:center;gap:8px;padding-left:14px;border-left:1px solid var(--line)}
+.ava{width:28px;height:28px;border-radius:50%;background:var(--a);color:#fff;display:grid;place-items:center;font-size:11px}
+.who small{display:block;color:var(--ink2);font-size:11px;line-height:1.2}
+.who i{font-style:normal;font-size:12px;font-weight:600}
+.content{padding:24px;flex:1}
+/* ---- 通用块 ---- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.card-h{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.card-h h3{font-size:14px;font-weight:600}
+.card-h .sp{flex:1}
+.card-b{padding:16px}
+.page-h{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px}
+.page-h h2{font-size:19px;font-weight:600;letter-spacing:.3px}
+.page-h p{color:var(--ink2);font-size:12px}
+.page-h .sp{flex:1}
+.filter{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:14px}
+.fi{display:flex;align-items:center;gap:7px}
+.fi label{color:var(--ink2);font-size:12px;white-space:nowrap}
+.inp,.sel{height:32px;border:1px solid var(--line);border-radius:5px;background:#fff;padding:0 10px;font-size:12px;color:var(--ink);min-width:170px;max-width:230px}
+.sel{min-width:180px}
+.btn{height:32px;padding:0 14px;border-radius:5px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:#C9B7B3}
+.btn.p{background:var(--p);border-color:var(--p);color:#fff}
+.btn.p:hover{background:var(--p2)}
+.btn.a{background:var(--a);border-color:var(--a);color:#fff}
+.btn.d{color:var(--bad);border-color:#E4C4C7}
+.btn.sm{height:26px;padding:0 9px;font-size:12px}
+.tbl-tool{display:flex;align-items:center;gap:8px;padding:0 0 12px}
+.tbl-tool .sp{flex:1}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{background:#FBF7F5;color:var(--ink2);font-weight:600;font-size:12px;white-space:nowrap}
+td{font-size:12.5px}
+tbody tr:hover{background:#FDFAF8}
+td.nowrap,th.nowrap{white-space:nowrap}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:12px;color:var(--p);font-weight:600}
+.tag{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:4px;font-size:11.5px;border:1px solid;white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:#BFDCCF;background:#F1F8F4}
+.tag.run{color:var(--a);border-color:#BFD8D5;background:#F1F7F6}
+.tag.warn{color:var(--warn);border-color:#E8D3AE;background:#FCF6EA}
+.tag.bad{color:var(--bad);border-color:#E4C4C7;background:#FBF1F2}
+.tag.gray{color:var(--ink2);border-color:var(--line);background:#F7F4F2}
+.pager{display:flex;align-items:center;gap:8px;padding:14px 4px 2px;justify-content:flex-end;color:var(--ink2);font-size:12px}
+.pager b{min-width:26px;height:26px;border:1px solid var(--line);border-radius:4px;display:grid;place-items:center;color:var(--ink);font-weight:400;cursor:pointer;background:#fff}
+.pager b.on{background:var(--p);color:#fff;border-color:var(--p)}
+.thumb{width:46px;height:34px;border-radius:4px;object-fit:cover;border:1px solid var(--line);background:#EFE7E4}
+.mut{color:var(--ink2)}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.kpi span{color:var(--ink2);font-size:11.5px;display:block;margin-bottom:6px}
+.kpi b{font-size:23px;font-weight:600;letter-spacing:-.5px;color:var(--p)}
+.kpi em{font-style:normal;font-size:11px;color:var(--ink2);margin-left:5px}
+.kpi em.up{color:var(--ok)} .kpi em.dn{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.chart{height:196px;background:linear-gradient(180deg,#fff,#FDFAF9);border-radius:6px;position:relative;overflow:hidden}
+/* 时间轴 */
+.tl{position:relative;padding-left:22px}
+.tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line)}
+.tl .it{position:relative;padding:0 0 16px 0}
+.tl .it:before{content:"";position:absolute;left:-21px;top:4px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--a)}
+.tl .it.done:before{background:var(--ok);border-color:var(--ok)}
+.tl .it.cur:before{background:var(--p);border-color:var(--p);box-shadow:0 0 0 3px #EFDDE0}
+.tl .it b{font-size:12.5px} .tl .it p{color:var(--ink2);font-size:12px;margin-top:2px}
+.tl .it time{font-size:11px;color:var(--ink2);margin-left:8px;font-variant-numeric:tabular-nums}
+/* 抽屉 */
+.drawer{position:absolute;right:0;top:0;bottom:0;width:520px;background:#fff;border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(60,20,30,.12);padding:18px 20px;overflow:auto}
+.form{display:grid;grid-template-columns:110px 1fr;gap:12px 14px;align-items:center}
+.form label{color:var(--ink2);text-align:right;font-size:12px}
+.form .inp,.form .sel{width:100%;max-width:none;height:34px}
+.form textarea{border:1px solid var(--line);border-radius:5px;padding:8px 10px;font-size:12px;min-height:64px;font-family:inherit}
+.req:after{content:" *";color:var(--bad)}
+/* 门户 */
+.p-shell{min-height:100vh;background:var(--bg)}
+.p-top{height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 40px;gap:28px;position:sticky;top:0;z-index:9}
+.p-top .logo{font-size:15px;font-weight:600;color:var(--p);display:flex;align-items:center;gap:8px}
+.p-nav{display:flex;gap:22px;font-size:13px}
+.p-nav a{color:var(--ink2);padding:19px 0;border-bottom:2px solid transparent}
+.p-nav a.on{color:var(--p);border-bottom-color:var(--p);font-weight:600}
+.p-body{max-width:1180px;margin:0 auto;padding:26px 24px 60px}
+.hero{background:linear-gradient(120deg,#5B2533,#7A3947 65%,#8C4A56);color:#fff;border-radius:10px;padding:26px 30px;display:flex;align-items:center;gap:24px}
+.hero h1{font-size:21px;font-weight:600;letter-spacing:.5px}
+.hero p{opacity:.82;font-size:12.5px;margin-top:6px}
+.hero .sp{flex:1}
+.hero .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);color:#fff}
+.track-steps{display:flex;margin:16px 0 4px}
+.track-steps .s{flex:1;text-align:center;position:relative;font-size:11.5px;color:var(--ink2)}
+.track-steps .s:before{content:"";width:9px;height:9px;border-radius:50%;background:#E2D6D3;display:block;margin:0 auto 6px}
+.track-steps .s.done{color:var(--ok)} .track-steps .s.done:before{background:var(--ok)}
+.track-steps .s.cur{color:var(--p);font-weight:600} .track-steps .s.cur:before{background:var(--p);box-shadow:0 0 0 3px #EFDDE0}
+.track-steps .s:after{content:"";position:absolute;top:4px;left:0;right:50%;height:1px;background:#E2D6D3}
+.track-steps .s:first-child:after{display:none}
+/* 登录 */
+.login{display:grid;grid-template-columns:1.15fr .85fr;min-height:100vh}
+.login .left{background:linear-gradient(150deg,#3E1621,#5B2533 45%,#7A3947);color:#fff;padding:56px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.login .left:after{content:"";position:absolute;right:-120px;bottom:-120px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.05)}
+.login h1{font-size:30px;line-height:1.35;font-weight:600;letter-spacing:1px}
+.login .left p{opacity:.75;margin-top:14px;font-size:13px;max-width:420px}
+.login .right{background:#fff;display:grid;place-items:center;padding:40px}
+.login form{width:330px;display:flex;flex-direction:column;gap:14px}
+.login .inp{height:42px;min-width:0;width:100%;max-width:none;font-size:13px}
+.login .btn{height:42px;justify-content:center;font-size:14px}
+.role-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.role-pick span{border:1px solid var(--line);border-radius:5px;padding:8px 4px;text-align:center;font-size:11.5px;color:var(--ink2);cursor:pointer}
+.role-pick span.on{border-color:var(--p);color:var(--p);background:#FBF3F4;font-weight:600}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--ink2);flex-wrap:wrap}
+.legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px}
+.note{background:#FBF7F5;border-left:3px solid var(--acc);padding:10px 12px;font-size:12px;color:var(--ink2);border-radius:0 5px 5px 0}</style></head><body><div class="p-shell">
+<div class="p-top"><div class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B2533" stroke-width="1.8"><path d="M2 8h10v8H2zM12 11h4l3 3v2h-7z"/></svg>运联通 · 货主门户</div>
+<div class="p-nav"><a class="" href="portal-home.html">首页</a><a class="on" href="portal-orders.html">我的运单</a><a class="" href="portal-demand.html">提交需求</a><a class="" href="portal-sign.html">签收确认</a><a class="" href="portal-review.html">服务评价</a></div><div class="sp" style="flex:1"></div>
+<div class="who" style="border:none"><div class="ava" style="background:#5B2533">李</div><div><small>客户账号</small><i>杭州鼎信贸易 · 李经理</i></div></div></div>
+<div class="p-body"><div class="page-h" style="margin-bottom:14px"><div><h2>我的运单</h2><p>仅展示本单位运单，最近 6 个月</p></div><div class="sp"></div><a class="btn p" href="portal-demand.html">提交需求</a></div><div class="filter"><div class="fi"><label>运单编号</label><input class="inp" placeholder="输入运单编号"></div><div class="fi"><label>状态</label><div class="sel" style="display:flex;align-items:center;color:#6B5E62">全部状态 ▾</div></div><div class="fi"><label>发货日期</label><div class="inp" style="display:flex;align-items:center;color:#6B5E62">2026-10-01 ~ 2026-11-01</div></div><div class="sp" style="flex:1"></div><button class="btn p">查询</button><button class="btn">重置</button></div><div class="card"><div class="card-b" style="padding-bottom:0"><table><thead><tr><th class="nowrap">运单编号</th><th class="">线路</th><th class="">货物</th><th class="">重量</th><th class="nowrap">发货日期</th><th class="">状态</th><th class="nowrap">操作</th></tr></thead><tbody><tr><td class="nowrap"><a class="mono" href="portal-orders.html">WB20261101008</a></td><td class="">杭州 → 上海</td><td class="">家电整机</td><td class="">12.5 t</td><td class="nowrap">2026-11-01</td><td class=""><span class="tag warn">待调度</span></td><td class="nowrap"><a href="#">详情</a></td></tr><tr><td class="nowrap"><a class="mono" href="portal-orders.html">WB20261101007</a></td><td class="">宁波 → 苏州</td><td class="">机床配件</td><td class="">8.0 t</td><td class="nowrap">2026-11-01</td><td class=""><span class="tag run">运输中</span></td><td class="nowrap"><a href="portal-orders.html">跟踪</a></td></tr><tr><td class="nowrap"><a class="mono" href="portal-orders.html">WB20261031042</a></td><td class="">苏州 → 杭州</td><td class="">精密仪器</td><td class="">3.2 t</td><td class="nowrap">2026-10-31</td><td class=""><span class="tag ok">已签收</span></td><td class="nowrap"><a href="portal-sign.html">确认签收</a></td></tr><tr><td class="nowrap"><a class="mono" href="portal-orders.html">WB20261031031</a></td><td class="">上海 → 嘉兴</td><td class="">日用百货</td><td class="">9.0 t</td><td class="nowrap">2026-10-31</td><td class=""><span class="tag bad">异常处理中</span></td><td class="nowrap"><a href="#">查看异常</a></td></tr><tr><td class="nowrap"><a class="mono" href="portal-orders.html">WB20261029015</a></td><td class="">绍兴 → 无锡</td><td class="">布匹</td><td class="">11.0 t</td><td class="nowrap">2026-10-29</td><td class=""><span class="tag ok">已完成</span></td><td class="nowrap"><a href="portal-review.html">评价</a></td></tr></tbody></table></div><div class="card-b" style="padding-top:0"><div class="pager"><span>共 128 条 / 每页 10 条</span><b>‹</b><b class="on">1</b><b>2</b><b>3</b><span class="mut">…</span><b>13</b><b>›</b><select class="sel" style="min-width:90px;height:26px"><option>10 条/页</option><option>20 条/页</option><option>50 条/页</option></select></div></div></div></div></div></body></html>

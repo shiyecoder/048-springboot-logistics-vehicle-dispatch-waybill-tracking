@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8">
+<title>运输需求 · 运联通 TMS</title><style>:root{
+  --p:#5B2533; --p2:#4A1D2A; --a:#2F6F6A; --bg:#FAF7F5; --ink:#241A1D;
+  --ink2:#6B5E62; --line:#E7DFDC; --acc:#7A3947; --ok:#2D765C; --bad:#A61B29;
+  --warn:#B4761E; --card:#FFFFFF; --r:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:13px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+a{color:var(--acc);text-decoration:none}
+/* ---- 后台骨架 ---- */
+.shell{display:flex;min-height:100vh}
+.side{width:220px;flex:0 0 220px;background:var(--p);color:#F3E8E6;display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{height:56px;display:flex;align-items:center;gap:9px;padding:0 18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.brand b{font-size:14px;letter-spacing:.5px;font-weight:600}
+.brand span{font-size:10px;opacity:.6;letter-spacing:1.5px}
+.nav{padding:10px 0;overflow:auto;flex:1}
+.nav .grp{padding:12px 18px 6px;font-size:11px;opacity:.5;letter-spacing:1px}
+.nav a{display:flex;align-items:center;gap:9px;padding:9px 18px;color:#E7D6D3;font-size:13px;border-left:3px solid transparent}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.on{background:rgba(255,255,255,.12);color:#fff;border-left-color:#E8C9C3;font-weight:600}
+.nav a svg{width:15px;height:15px;opacity:.85;flex:0 0 15px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{height:56px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding:0 24px;position:sticky;top:0;z-index:9}
+.crumb{font-size:12px;color:var(--ink2)}
+.crumb b{color:var(--ink);font-weight:600}
+.top .sp{flex:1}
+.iconbtn{width:32px;height:32px;border-radius:6px;display:grid;place-items:center;color:var(--ink2);position:relative;cursor:pointer}
+.iconbtn:hover{background:#F5EFEC;color:var(--p)}
+.dot{position:absolute;top:5px;right:5px;width:6px;height:6px;background:var(--bad);border-radius:50%}
+.who{display:flex;align-items:center;gap:8px;padding-left:14px;border-left:1px solid var(--line)}
+.ava{width:28px;height:28px;border-radius:50%;background:var(--a);color:#fff;display:grid;place-items:center;font-size:11px}
+.who small{display:block;color:var(--ink2);font-size:11px;line-height:1.2}
+.who i{font-style:normal;font-size:12px;font-weight:600}
+.content{padding:24px;flex:1}
+/* ---- 通用块 ---- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.card-h{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.card-h h3{font-size:14px;font-weight:600}
+.card-h .sp{flex:1}
+.card-b{padding:16px}
+.page-h{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px}
+.page-h h2{font-size:19px;font-weight:600;letter-spacing:.3px}
+.page-h p{color:var(--ink2);font-size:12px}
+.page-h .sp{flex:1}
+.filter{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:14px}
+.fi{display:flex;align-items:center;gap:7px}
+.fi label{color:var(--ink2);font-size:12px;white-space:nowrap}
+.inp,.sel{height:32px;border:1px solid var(--line);border-radius:5px;background:#fff;padding:0 10px;font-size:12px;color:var(--ink);min-width:170px;max-width:230px}
+.sel{min-width:180px}
+.btn{height:32px;padding:0 14px;border-radius:5px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:#C9B7B3}
+.btn.p{background:var(--p);border-color:var(--p);color:#fff}
+.btn.p:hover{background:var(--p2)}
+.btn.a{background:var(--a);border-color:var(--a);color:#fff}
+.btn.d{color:var(--bad);border-color:#E4C4C7}
+.btn.sm{height:26px;padding:0 9px;font-size:12px}
+.tbl-tool{display:flex;align-items:center;gap:8px;padding:0 0 12px}
+.tbl-tool .sp{flex:1}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+th{background:#FBF7F5;color:var(--ink2);font-weight:600;font-size:12px;white-space:nowrap}
+td{font-size:12.5px}
+tbody tr:hover{background:#FDFAF8}
+td.nowrap,th.nowrap{white-space:nowrap}
+.mono{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-size:12px;color:var(--p);font-weight:600}
+.tag{display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;border-radius:4px;font-size:11.5px;border:1px solid;white-space:nowrap}
+.tag.ok{color:var(--ok);border-color:#BFDCCF;background:#F1F8F4}
+.tag.run{color:var(--a);border-color:#BFD8D5;background:#F1F7F6}
+.tag.warn{color:var(--warn);border-color:#E8D3AE;background:#FCF6EA}
+.tag.bad{color:var(--bad);border-color:#E4C4C7;background:#FBF1F2}
+.tag.gray{color:var(--ink2);border-color:var(--line);background:#F7F4F2}
+.pager{display:flex;align-items:center;gap:8px;padding:14px 4px 2px;justify-content:flex-end;color:var(--ink2);font-size:12px}
+.pager b{min-width:26px;height:26px;border:1px solid var(--line);border-radius:4px;display:grid;place-items:center;color:var(--ink);font-weight:400;cursor:pointer;background:#fff}
+.pager b.on{background:var(--p);color:#fff;border-color:var(--p)}
+.thumb{width:46px;height:34px;border-radius:4px;object-fit:cover;border:1px solid var(--line);background:#EFE7E4}
+.mut{color:var(--ink2)}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+.kpi span{color:var(--ink2);font-size:11.5px;display:block;margin-bottom:6px}
+.kpi b{font-size:23px;font-weight:600;letter-spacing:-.5px;color:var(--p)}
+.kpi em{font-style:normal;font-size:11px;color:var(--ink2);margin-left:5px}
+.kpi em.up{color:var(--ok)} .kpi em.dn{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.chart{height:196px;background:linear-gradient(180deg,#fff,#FDFAF9);border-radius:6px;position:relative;overflow:hidden}
+/* 时间轴 */
+.tl{position:relative;padding-left:22px}
+.tl:before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:1px;background:var(--line)}
+.tl .it{position:relative;padding:0 0 16px 0}
+.tl .it:before{content:"";position:absolute;left:-21px;top:4px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid var(--a)}
+.tl .it.done:before{background:var(--ok);border-color:var(--ok)}
+.tl .it.cur:before{background:var(--p);border-color:var(--p);box-shadow:0 0 0 3px #EFDDE0}
+.tl .it b{font-size:12.5px} .tl .it p{color:var(--ink2);font-size:12px;margin-top:2px}
+.tl .it time{font-size:11px;color:var(--ink2);margin-left:8px;font-variant-numeric:tabular-nums}
+/* 抽屉 */
+.drawer{position:absolute;right:0;top:0;bottom:0;width:520px;background:#fff;border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(60,20,30,.12);padding:18px 20px;overflow:auto}
+.form{display:grid;grid-template-columns:110px 1fr;gap:12px 14px;align-items:center}
+.form label{color:var(--ink2);text-align:right;font-size:12px}
+.form .inp,.form .sel{width:100%;max-width:none;height:34px}
+.form textarea{border:1px solid var(--line);border-radius:5px;padding:8px 10px;font-size:12px;min-height:64px;font-family:inherit}
+.req:after{content:" *";color:var(--bad)}
+/* 门户 */
+.p-shell{min-height:100vh;background:var(--bg)}
+.p-top{height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 40px;gap:28px;position:sticky;top:0;z-index:9}
+.p-top .logo{font-size:15px;font-weight:600;color:var(--p);display:flex;align-items:center;gap:8px}
+.p-nav{display:flex;gap:22px;font-size:13px}
+.p-nav a{color:var(--ink2);padding:19px 0;border-bottom:2px solid transparent}
+.p-nav a.on{color:var(--p);border-bottom-color:var(--p);font-weight:600}
+.p-body{max-width:1180px;margin:0 auto;padding:26px 24px 60px}
+.hero{background:linear-gradient(120deg,#5B2533,#7A3947 65%,#8C4A56);color:#fff;border-radius:10px;padding:26px 30px;display:flex;align-items:center;gap:24px}
+.hero h1{font-size:21px;font-weight:600;letter-spacing:.5px}
+.hero p{opacity:.82;font-size:12.5px;margin-top:6px}
+.hero .sp{flex:1}
+.hero .btn{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);color:#fff}
+.track-steps{display:flex;margin:16px 0 4px}
+.track-steps .s{flex:1;text-align:center;position:relative;font-size:11.5px;color:var(--ink2)}
+.track-steps .s:before{content:"";width:9px;height:9px;border-radius:50%;background:#E2D6D3;display:block;margin:0 auto 6px}
+.track-steps .s.done{color:var(--ok)} .track-steps .s.done:before{background:var(--ok)}
+.track-steps .s.cur{color:var(--p);font-weight:600} .track-steps .s.cur:before{background:var(--p);box-shadow:0 0 0 3px #EFDDE0}
+.track-steps .s:after{content:"";position:absolute;top:4px;left:0;right:50%;height:1px;background:#E2D6D3}
+.track-steps .s:first-child:after{display:none}
+/* 登录 */
+.login{display:grid;grid-template-columns:1.15fr .85fr;min-height:100vh}
+.login .left{background:linear-gradient(150deg,#3E1621,#5B2533 45%,#7A3947);color:#fff;padding:56px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.login .left:after{content:"";position:absolute;right:-120px;bottom:-120px;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.05)}
+.login h1{font-size:30px;line-height:1.35;font-weight:600;letter-spacing:1px}
+.login .left p{opacity:.75;margin-top:14px;font-size:13px;max-width:420px}
+.login .right{background:#fff;display:grid;place-items:center;padding:40px}
+.login form{width:330px;display:flex;flex-direction:column;gap:14px}
+.login .inp{height:42px;min-width:0;width:100%;max-width:none;font-size:13px}
+.login .btn{height:42px;justify-content:center;font-size:14px}
+.role-pick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.role-pick span{border:1px solid var(--line);border-radius:5px;padding:8px 4px;text-align:center;font-size:11.5px;color:var(--ink2);cursor:pointer}
+.role-pick span.on{border-color:var(--p);color:var(--p);background:#FBF3F4;font-weight:600}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--ink2);flex-wrap:wrap}
+.legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px}
+.note{background:#FBF7F5;border-left:3px solid var(--acc);padding:10px 12px;font-size:12px;color:var(--ink2);border-radius:0 5px 5px 0}</style></head><body>
+<div class="shell"><aside class="side"><div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8C9C3" stroke-width="1.8"><path d="M2 8h10v8H2zM12 11h4l3 3v2h-7z"/><circle cx="6" cy="18" r="1.6"/><circle cx="16" cy="18" r="1.6"/></svg><b>运联通 TMS</b><span>LOGISTICS</span></div><nav class="nav"><div class="grp">业务概览</div><a class="" href="dashboard.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm10 8h8V11h-8v10zM3 21h8v-6H3v6zM13 9h8V3h-8v6z"/></svg>运营看板</a><a class="" href="todo.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 12l5 5L20 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>我的待办</a><div class="grp">运输业务</div><a class="on" href="demands.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h10l4 4v14H5z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8M8 16h6" stroke="currentColor" stroke-width="1.5"/></svg>运输需求</a><a class="" href="orders.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M15 2v5h5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>运单中心</a><a class="" href="dispatch.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 7h11v9H2zM13 10h4l3 3v3h-7z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>调度配车</a><a class="" href="recommend.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 20V9M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>联合配车推荐</a><a class="" href="loading.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 7h11v9H2zM13 10h4l3 3v3h-7z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>装车发运</a><a class="" href="track.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s7-6.3 7-12A7 7 0 1 0 5 10c0 5.7 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>在途节点</a><a class="" href="exceptions.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 17H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 9v5M12 16.5v.1" stroke="currentColor" stroke-width="1.7"/></svg>异常事件</a><a class="" href="receipts.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h10l4 4v14H5z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8M8 16h6" stroke="currentColor" stroke-width="1.5"/></svg>回单复核</a><div class="grp">费用结算</div><a class="" href="fees.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>费用管理</a><a class="" href="bills.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>客户账单</a><a class="" href="payments.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>收付款</a><a class="" href="reviews.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 12l5 5L20 6" fill="none" stroke="currentColor" stroke-width="2"/></svg>服务评价</a><div class="grp">资源档案</div><a class="" href="customers.html"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>客户档案</a><a class="" href="addresses.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22s7-6.3 7-12A7 7 0 1 0 5 10c0 5.7 7 12 7 12z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>客户地址</a><a class="" href="vehicles.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 7h11v9H2zM13 10h4l3 3v3h-7z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="6" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg>车辆档案</a><a class="" href="vcerts.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h10l4 4v14H5z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8M8 16h6" stroke="currentColor" stroke-width="1.5"/></svg>车辆证件</a><a class="" href="drivers.html"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>驾驶员</a><a class="" href="dcerts.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h10l4 4v14H5z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 12h8M8 16h6" stroke="currentColor" stroke-width="1.5"/></svg>驾驶员证件</a><div class="grp">报表与配置</div><a class="" href="analysis.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 20V9M10 20V4M16 20v-7M22 20H2" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>统计报表</a><a class="" href="rules.html"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="1.6"/></svg>配车规则配置</a><div class="grp">系统管理</div><a class="" href="users.html"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>用户管理</a><a class="" href="roles.html"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="1.6"/></svg>角色管理</a><a class="" href="menus.html"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="1.6"/></svg>菜单管理</a><a class="" href="messages.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 16V10a6 6 0 1 1 12 0v6l2 3H4z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>消息中心</a><a class="" href="profile.html"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>个人信息</a></nav></aside><div class="main"><div class="top">
+  <div class="crumb">运联通 TMS / <b>运输业务 / 运输需求</b></div><div class="sp"></div>
+  <a class="iconbtn" href="messages.html" title="消息中心"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 16V10a6 6 0 1 1 12 0v6l2 3H4z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><i class="dot"></i></a>
+  <a class="iconbtn" href="profile.html" title="帮助"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1" stroke="currentColor" stroke-width="1.6"/></svg></a>
+  <div class="who"><div class="ava">王</div><div><small>华东运营中心</small><i>调度员 · 王海峰</i></div></div>
+</div>
+<div class="content"><div class="page-h"><div><h2>运输需求</h2><p>客户提交的需求单，审核后拆分或合并生成运单</p></div><div class="sp"></div><button class="btn">批量审核</button><button class="btn p">新建需求</button></div><div class="filter"><div class="fi"><label>需求编号</label><input class="inp" placeholder="输入需求编号"></div><div class="fi"><label>客户</label><div class="sel" style="display:flex;align-items:center;color:#6B5E62">全部客户 ▾</div></div><div class="fi"><label>需求状态</label><div class="sel" style="display:flex;align-items:center;color:#6B5E62">全部状态 ▾</div></div><div class="fi"><label>期望装货日期</label><div class="inp" style="display:flex;align-items:center;color:#6B5E62">2026-10-01 ~ 2026-11-01</div></div><div class="sp" style="flex:1"></div><button class="btn p">查询</button><button class="btn">重置</button></div><div class="card"><div class="card-b" style="padding-bottom:0"><table><thead><tr><th class="nowrap">需求编号</th><th class="">客户</th><th class="">货物</th><th class="">重量/体积</th><th class="">线路</th><th class="nowrap">期望装货</th><th class="">状态</th><th class="">说明</th></tr></thead><tbody><tr><td class="nowrap"><span class="mono">XQ20261101012</span></td><td class="">杭州鼎信贸易</td><td class="">家电整机</td><td class="">12.5 吨 / 42 m³</td><td class="">杭州→上海</td><td class="nowrap">2026-11-01 18:00</td><td class=""><span class="tag warn">待审核</span></td><td class="">客户提交</td></tr><tr><td class="nowrap"><span class="mono">XQ20261101011</span></td><td class="">宁波恒达机械</td><td class="">机床配件</td><td class="">8.0 吨 / 18 m³</td><td class="">宁波→苏州</td><td class="nowrap">2026-11-02 09:00</td><td class=""><span class="tag run">已审核</span></td><td class="">已转 2 张运单</td></tr><tr><td class="nowrap"><span class="mono">XQ20261031009</span></td><td class="">苏州晶科电子</td><td class="">精密仪器</td><td class="">3.2 吨 / 9 m³</td><td class="">苏州→杭州</td><td class="nowrap">2026-10-31 20:00</td><td class=""><span class="tag ok">已建单</span></td><td class="">运单 WB20261031042</td></tr><tr><td class="nowrap"><span class="mono">XQ20261030006</span></td><td class="">嘉兴众诚包装</td><td class="">纸箱成品</td><td class="">15.0 吨 / 55 m³</td><td class="">嘉兴→宁波</td><td class="nowrap">2026-10-30 14:30</td><td class=""><span class="tag gray">已作废</span></td><td class="">客户取消</td></tr></tbody></table></div><div class="card-b" style="padding-top:0"><div class="pager"><span>共 128 条 / 每页 10 条</span><b>‹</b><b class="on">1</b><b>2</b><b>3</b><span class="mut">…</span><b>13</b><b>›</b><select class="sel" style="min-width:90px;height:26px"><option>10 条/页</option><option>20 条/页</option><option>50 条/页</option></select></div></div></div><div style="margin-top:16px" class="note">审核规则：重量或体积超单车核载时，系统提示拆分为多张运单；同客户同线路同日期可合并为一张运单，合并后运单编号由后端生成。</div></div></div></div></body></html>
